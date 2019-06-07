@@ -1,4 +1,0 @@
-some data
-127.0.0.1	www.test3.ru
-127.0.0.1	www.test2.ru
-127.0.0.1	www.test4.ru

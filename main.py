@@ -44,6 +44,8 @@ class MyApp(QtWidgets.QMainWindow):
                 line += '\n'
             lines.append(line)
 
+        self.ui.hostBrowser.clear()
+        self.ui.hostBrowser.setSelectionMode(QListWidget.ExtendedSelection)
         self.ui.hostBrowser.addItems(lines)
         self.ui.hostBrowser.scrollToBottom()
         self.ui.hostBrowser.show()
@@ -71,7 +73,6 @@ class MyApp(QtWidgets.QMainWindow):
         f.close
 
     def excludeHost(self):
-        f = open('src/excluded.txt', 'a')
         listItems=self.ui.hostBrowser.selectedItems()
         if not listItems: return
         excludeList = []
@@ -80,7 +81,8 @@ class MyApp(QtWidgets.QMainWindow):
                 lines = fread.readlines()
             for line in lines:
                 if line.strip('\n') == self.ui.hostBrowser.currentItem().text().strip("\n"):
-                    f.write(self.ui.hostBrowser.currentItem().text())
+                    with open('src/excluded.txt', 'a') as f:
+                        f.write(self.ui.hostBrowser.currentItem().text())
             with open("src/writehost.txt", "w") as file:
                 for line in lines:
                     if line.strip("\n") != self.ui.hostBrowser.currentItem().text().strip("\n"):

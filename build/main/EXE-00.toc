@@ -1,5 +1,5 @@
 ('C:\\Users\\Nurlan\\Desktop\\host reader\\build\\main\\main.exe',
- True,
+ False,
  False,
  True,
  None,
@@ -37,7 +37,7 @@
  [],
  False,
  False,
- 1559862862,
- [('run.exe',
-   'c:\\users\\nurlan\\appdata\\local\\programs\\python\\python36-32\\lib\\site-packages\\PyInstaller\\bootloader\\Windows-32bit\\run.exe',
+ 1559911078,
+ [('runw.exe',
+   'c:\\users\\nurlan\\appdata\\local\\programs\\python\\python36-32\\lib\\site-packages\\PyInstaller\\bootloader\\Windows-32bit\\runw.exe',
    'EXECUTABLE')])
