@@ -20,7 +20,7 @@ class Excluded(QtWidgets.QMainWindow):
         excludeds[list].connect(self.initUI1)
 
     def initUI1(self):
-        self.setWindowTitle('second')
+        self.setWindowTitle('Excluded')
         self.setFixedSize(505, 268)
         f = open('src/excluded.txt')
         lines = []

@@ -1,6 +1,7 @@
 from PyQt5 import QtCore, uic, QtWidgets
 from PyQt5.QtWidgets import *
 import sys
+import os
 from main1 import Ui_MainWindow
 from PyQt5.QtCore import pyqtSignal
 from excluded import Excluded
@@ -25,9 +26,17 @@ class MyApp(QtWidgets.QMainWindow):
     def initUI(self):
         self.setFixedSize(473, 314)
         self.setWindowTitle('Host Reader')
-        f = open('src/writehost.txt')
+        with open('src/writehost.txt') as f:
+            tempLines = f.readlines()
         lines = []
         lineChecker = 0
+        exists = os.path.isfile('hosts.bak')
+        if not exists:
+            with open(HOST, 'r') as f:
+                backUp = f.readlines()
+            for backUpLine in backUp:
+                with open('hosts.bak', 'a') as w:
+                    w.write(backUpLine)
         with open(HOST, 'r') as hr:
             items = hr.readlines()
         for item in items:
@@ -36,8 +45,7 @@ class MyApp(QtWidgets.QMainWindow):
         if lineChecker == 0:
             with open(HOST, 'a') as h:
                 h.write("\n" + "#DO NOT DELETE THIS LINE!!! IT'S USED BY HOST READER!" + "\n")
-
-        for line in f:
+        for line in tempLines:
             if len(line) == 1 and line.find('\n') != -1:
                 continue
             elif line.find('\n') == -1:
@@ -49,9 +57,7 @@ class MyApp(QtWidgets.QMainWindow):
         self.ui.hostBrowser.addItems(lines)
         self.ui.hostBrowser.scrollToBottom()
         self.ui.hostBrowser.show()
-
         self.show()
-        f.close
 
     def openExcludeds(self):
         # self.window = QtWidgets.QMainWindow()
