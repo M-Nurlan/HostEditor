@@ -2,7 +2,7 @@
 
 ![](screenshot.jpg)
 
-HostEditor help you to easy managing your /etc/hosts file.
+HostEditor helps you to easily manage your /etc/hosts file.
 
 ### Portable Version
 
