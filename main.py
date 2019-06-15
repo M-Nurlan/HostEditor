@@ -1,37 +1,42 @@
-from PyQt5 import QtCore, uic, QtWidgets
+from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import *
 import sys
 import os
 from main1 import Ui_MainWindow
 from PyQt5.QtCore import pyqtSignal
 from excluded import Excluded
-# UIClass, QtBaseClass = uic.loadUiType("main.ui")
+
 
 class MyApp(QtWidgets.QMainWindow):
-    excludeds = pyqtSignal(list)
+    excludes = pyqtSignal(list)
     global HOST
-    HOST = "C:\\Windows\\System32\\drivers\\etc\\hosts"
+
+    if sys.platform.startswith('linux') or sys.platform == 'darwin':
+        HOST = "/etc/hosts"
+    else:
+        HOST = "C:\\Windows\\System32\\drivers\\etc\\hosts"
+
     def __init__(self):
         super(MyApp, self).__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        self.window = Excluded(self.excludeds)
-        self.initUI()
-        self.ui.addBtn.clicked.connect(self.addHost)
-        self.ui.deleteBtn.clicked.connect(self.deleteHost)
-        self.ui.excludeBtn.clicked.connect(self.excludeHost)
-        self.ui.removeFromExclude.clicked.connect(self.openExcludeds)
-        self.window.includes[list].connect(self.initUI)
+        self.window = Excluded(self.excludes)
+        self.init_ui()
+        self.ui.addBtn.clicked.connect(self.add_host)
+        self.ui.deleteBtn.clicked.connect(self.delete_host)
+        self.ui.excludeBtn.clicked.connect(self.exclude_host)
+        self.ui.removeFromExclude.clicked.connect(self.open_excludes)
+        self.window.includes[list].connect(self.init_ui)
 
-    def initUI(self):
+    def init_ui(self):
         self.setFixedSize(475, 372)
         self.setWindowTitle('Host Reader')
         lines = []
         exists = os.path.isfile('hosts.bak')
         if not exists:
             with open(HOST, 'r') as f:
-                backUp = f.readlines()
-            for backUpLine in backUp:
+                back_up = f.readlines()
+            for backUpLine in back_up:
                 with open('hosts.bak', 'a') as w:
                     w.write(backUpLine)
         with open(HOST, 'r') as hr:
@@ -52,10 +57,10 @@ class MyApp(QtWidgets.QMainWindow):
         self.ui.hostBrowser.show()
         self.show()
 
-    def openExcludeds(self):
+    def open_excludes(self):
         self.window.show()
 
-    def addHost(self):
+    def add_host(self):
         text = self.ui.hostEditor.toPlainText()
         with open(HOST, 'a') as f:
             f.write(text + '\n')
@@ -65,36 +70,37 @@ class MyApp(QtWidgets.QMainWindow):
         self.ui.hostBrowser.scrollToBottom()
         self.ui.hostBrowser.show()
 
-    def excludeHost(self):
-        listItems=self.ui.hostBrowser.selectedItems()
-        if not listItems: return
-        excludeList = []
-        for item in listItems:
+    def exclude_host(self):
+        list_items = self.ui.hostBrowser.selectedItems()
+        if not list_items: return
+        exclude_list = []
+        for item in list_items:
             with open(HOST, 'r') as f:
-                hostLines = f.readlines()
+                host_lines = f.readlines()
             with open(HOST, 'w') as f:
-                for hostLine in hostLines:
+                for hostLine in host_lines:
                     if hostLine.strip('\n') == item.text().strip('\n'):
                         f.write('#HE ' + hostLine)
                     else:
                         f.write(hostLine)
-            excludeList.append(item.text())
+            exclude_list.append(item.text())
             self.ui.hostBrowser.takeItem(self.ui.hostBrowser.row(item))
-        self.excludeds.emit(excludeList)
+        self.excludes.emit(exclude_list)
 
-    def deleteHost(self):
-        listItems=self.ui.hostBrowser.selectedItems()
-        if not listItems: return
-        for item in listItems:
+    def delete_host(self):
+        list_items = self.ui.hostBrowser.selectedItems()
+        if not list_items: return
+        for item in list_items:
             print(item.text())
             with open(HOST, 'r') as f:
-                hostLines = f.readlines()
+                host_lines = f.readlines()
             with open(HOST, 'w') as f:
-                for line in hostLines:
+                for line in host_lines:
                     if line.strip("\n") != item.text().strip("\n"):
                         f.write(line)
             self.ui.hostBrowser.takeItem(self.ui.hostBrowser.row(item))
         self.ui.hostBrowser.scrollToBottom()
+
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
