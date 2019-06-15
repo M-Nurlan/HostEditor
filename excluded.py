@@ -1,25 +1,30 @@
-from PyQt5 import QtCore, uic, QtWidgets
+from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import *
 import sys
 from exclude import Ui_MainWindow
 from PyQt5.QtCore import pyqtSignal
-# UIClass, QtBaseClass = uic.loadUiType("excluded.ui")
+
 
 class Excluded(QtWidgets.QMainWindow):
     includes = pyqtSignal(list)
     global HOST
-    HOST = "C:\\Windows\\System32\\drivers\\etc\\hosts"
-    def __init__(self, excludeds):
+
+    if sys.platform.startswith('linux') or sys.platform == 'darwin':
+        HOST = "/etc/hosts"
+    else:
+        HOST = "C:\\Windows\\System32\\drivers\\etc\\hosts"
+
+    def __init__(self, excludes):
         super(Excluded, self).__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        self.initUI1()
+        self.init_ui1()
 
         self.ui.includeBtn.accepted.connect(self.remove)
         self.ui.includeBtn.rejected.connect(self.hide)
-        excludeds[list].connect(self.initUI1)
+        excludes[list].connect(self.init_ui1)
 
-    def initUI1(self):
+    def init_ui1(self):
         self.setWindowTitle('Excluded')
         self.setFixedSize(505, 268)
         f = open(HOST)
@@ -39,18 +44,18 @@ class Excluded(QtWidgets.QMainWindow):
         self.ui.excludeBrowse.show()
 
     def remove(self):
-        listItems = self.ui.excludeBrowse.selectedItems()
-        sendingValue = []
-        for item in listItems:
+        list_items = self.ui.excludeBrowse.selectedItems()
+        sending_value = []
+        for item in list_items:
             with open(HOST, 'r') as f:
-                excludeds = f.readlines()
+                excludes = f.readlines()
             with open(HOST, 'w') as f:
-                for line in excludeds:
+                for line in excludes:
                     if line.strip('\n').strip('#HE ') == item.text().strip('\n').strip('#HE '):
                         f.write(line.strip('#HE '))
                     else:
                         f.write(line)
-            sendingValue.append(item.text())
+            sending_value.append(item.text())
             self.ui.excludeBrowse.takeItem(self.ui.excludeBrowse.row(item))
-        self.includes.emit(sendingValue)
+        self.includes.emit(sending_value)
         self.hide()
